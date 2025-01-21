@@ -1,7 +1,9 @@
 "use client"
-import axios from "axios"
+import axios from "axios";
+import { useRouter } from 'next/navigation';
 
 export default function Signup() {
+    const router = useRouter()
     const handleSubmit = async (event) => {
         event.preventDefault();
 
@@ -31,6 +33,8 @@ export default function Signup() {
 
             const data = await res.data.rest;
             console.log(data);
+
+            router.push("/signin")    
         } catch (error) {
             console.error("Error during signup:", error);
         }
