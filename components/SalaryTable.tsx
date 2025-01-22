@@ -1,6 +1,19 @@
 import AddButton from "./AddButton";
 
-export default function SalaryTable({ salaryData }) {
+interface Data {
+    adminId: number; 
+    company: string;
+    ctc: number;
+    id: number
+}
+
+type DataArray= Data[]
+
+interface SalaryTableProps{
+    salaryData: DataArray
+}
+
+export default function SalaryTable({ salaryData }: SalaryTableProps) {
     return (
         <div className="mt-8 flow-root">
             <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
