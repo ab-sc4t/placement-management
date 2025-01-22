@@ -1,4 +1,6 @@
 import SalaryTable from "@/components/SalaryTable"
+import { authOptions } from "@/lib/auth"
+import { getServerSession } from "next-auth"
 
 async function getSalaryData() {
     try {
@@ -13,8 +15,10 @@ async function getSalaryData() {
 
 export default async function SalariesPage() {
     const salaryData = await getSalaryData()
-
-    return (
+    const session = await getServerSession(authOptions);
+    console.log(session);
+    
+    return (    
         <div className="min-h-screen bg-gray-100 py-8">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="sm:flex sm:items-center">
