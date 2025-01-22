@@ -1,3 +1,4 @@
+import AppBar from "@/components/AppBar"
 import SalaryTable from "@/components/SalaryTable"
 import { authOptions } from "@/lib/auth"
 import { getServerSession } from "next-auth"
@@ -15,21 +16,24 @@ async function getSalaryData() {
 
 export default async function SalariesPage() {
     const salaryData = await getSalaryData()
-    const session = await getServerSession(authOptions);
+    const session = await getServerSession(authOptions)
     console.log(session);
     
-    return (    
-        <div className="min-h-screen bg-gray-100 py-8">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="sm:flex sm:items-center">
-                    <div className="sm:flex-auto">
-                        <h1 className="text-2xl font-semibold leading-6 text-gray-900">Company Salaries</h1>
-                        <p className="mt-2 text-sm text-gray-700">
-                            A list of all companies and their CTC offerings.
-                        </p>
+    return (
+        <div className="min-h-screen bg-gray-100">
+            <AppBar session={session} />
+            <div className="py-8">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="sm:flex sm:items-center">
+                        <div className="sm:flex-auto">
+                            <h1 className="text-2xl font-semibold leading-6 text-gray-900">Company Salaries</h1>
+                            <p className="mt-2 text-sm text-gray-700">
+                                A list of all companies and their CTC offerings.
+                            </p>
+                        </div>
                     </div>
+                    <SalaryTable salaryData={salaryData} />
                 </div>
-                <SalaryTable salaryData={salaryData} />
             </div>
         </div>
     )
