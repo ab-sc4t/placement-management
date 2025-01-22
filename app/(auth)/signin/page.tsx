@@ -1,40 +1,54 @@
+// app/signin/page.tsx
 "use client"
-import axios from "axios";
+import { signIn } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 
-export default function Signup() {
-    const router = useRouter()
-    const handleSubmit = async (event:any) => {
+export default function Signin() {
+    const router = useRouter();
+
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
+        const form = event.currentTarget;
+        const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+        const errorDiv = document.getElementById('error-message');
+
+        submitButton.disabled = true;
+        submitButton.textContent = 'Signing in...';
+
+        if (errorDiv) {
+            errorDiv.textContent = '';
+            errorDiv.style.display = 'none';
+        }
+
         const formData = {
-            email: event.target.email.value,
-            password: event.target.password.value,
+            email: (form.elements.namedItem('email') as HTMLInputElement).value,
+            password: (form.elements.namedItem('password') as HTMLInputElement).value,
+            redirect: false,
         };
 
-        console.log("Form Data Submitted:", formData);
-
         try {
-            const res = await axios.post(
-                "http://localhost:3000/api/auth/signin",
-                formData,
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
+            const response = await signIn("credentials", formData);
+
+            if (response?.error) {
+                if (errorDiv) {
+                    errorDiv.textContent = 'Invalid email or password';
+                    errorDiv.style.display = 'block';
                 }
-            );
-
-            if (!res) {
-                throw new Error("Signin failed");
+            } else if (response?.ok) {
+                router.push('/jobdetails');
+                router.refresh();
             }
-            console.log("res: ", res);
-            const data = await res.data.id;
-            console.log("data after signing in: ", data);
-
-            router.push("/jobdetails")    
         } catch (error) {
             console.error("Error during signin:", error);
+            if (errorDiv) {
+                errorDiv.textContent = 'An unexpected error occurred';
+                errorDiv.style.display = 'block';
+            }
+        } finally {
+            // Reset button state
+            submitButton.disabled = false;
+            submitButton.textContent = 'Sign In';
         }
     };
 
@@ -45,15 +59,23 @@ export default function Signup() {
                 <p className="text-sm text-gray-600 text-center mb-6">
                     Enter your information to login
                 </p>
+
+                <div
+                    id="error-message"
+                    className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded"
+                    style={{ display: 'none' }}
+                ></div>
+
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                             Email
                         </label>
                         <input
-                            type="text"
+                            type="email"
                             id="email"
                             name="email"
+                            required
                             placeholder="ayush@example.com"
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-black text-black"
                         />
@@ -66,13 +88,14 @@ export default function Signup() {
                             type="password"
                             id="password"
                             name="password"
+                            required
                             placeholder="Enter your password"
                             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-black text-black"
                         />
                     </div>
                     <button
                         type="submit"
-                        className="w-full bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
+                        className="w-full bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Sign In
                     </button>
@@ -80,7 +103,7 @@ export default function Signup() {
                 <p className="text-sm text-center text-gray-600 mt-4">
                     Dont have an account?{" "}
                     <a
-                        href="/signin"
+                        href="/signup"
                         className="text-blue-500 hover:underline focus:ring focus:ring-blue-500"
                     >
                         Sign Up
