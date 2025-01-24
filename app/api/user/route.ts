@@ -18,7 +18,8 @@ export async function POST(req: NextRequest) {
     try {
         console.log("try1");
         const body = await req.json();
-        const { email, password, firstname, lastname } = body;
+        const { email, password, firstname, lastname, admin } = body;
+        console.log(admin);
         console.log(email);
         console.log(password);
         console.log(firstname);
@@ -47,6 +48,7 @@ export async function POST(req: NextRequest) {
 
             const newUser = await db.user.create({
                 data: {
+                    admin: admin,
                     email: email,
                     password: hashedPassword,
                     firstname: firstname,
