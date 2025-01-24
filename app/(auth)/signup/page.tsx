@@ -1,13 +1,20 @@
 "use client"
+import AddButton from "@/components/AddButton";
 import axios from "axios";
 import { useRouter } from 'next/navigation';
+import { useState } from "react";
 
 export default function Signup() {
-    const router = useRouter()
+    const router = useRouter();
+    const [isAdmin, setIsAdmin] = useState(false);
+    const handleAdminClick = (value:boolean)=>{
+        setIsAdmin(value)
+    }
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         const formData = {
+            admin: isAdmin,
             firstname: event.target.firstname.value,
             lastname: event.target.lastname.value,
             email: event.target.email.value,
@@ -34,7 +41,7 @@ export default function Signup() {
             const data = await res.data.rest;
             console.log(data);
 
-            router.push("/signin")    
+            router.push("/signin")
         } catch (error) {
             console.error("Error during signup:", error);
         }
@@ -48,6 +55,14 @@ export default function Signup() {
                     Enter your information to create an account
                 </p>
                 <form onSubmit={handleSubmit}>
+                    <div className="mb-4 flex justify-center gap-4">
+                        <div>
+                            <AddButton text="Student" onClick={()=>handleAdminClick(false)} variant= "primary" isSelected={!isAdmin}/>
+                        </div>
+                        <div>
+                        <AddButton text="Admin" onClick={()=>handleAdminClick(true)} variant= "primary" isSelected={isAdmin}/>
+                        </div>
+                    </div>
                     <div className="mb-4">
                         <label htmlFor="firstname" className="block text-sm font-medium text-gray-700">
                             First Name
