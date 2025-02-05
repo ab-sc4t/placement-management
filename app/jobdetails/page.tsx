@@ -1,4 +1,4 @@
-import AppBar from "@/components/AppBar"
+import Header from "@/components/Header"
 import SalaryTable from "@/components/SalaryTable"
 import { authOptions } from "@/lib/auth"
 import { getServerSession } from "next-auth"
@@ -21,7 +21,7 @@ export default async function SalariesPage() {
     
     return (
         <div className="min-h-screen bg-gray-100">
-            <AppBar session={session} />
+            <Header session={session}/>
             <div className="py-8">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="sm:flex sm:items-center">
