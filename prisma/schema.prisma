@@ -25,9 +25,15 @@ model AdminUser{
 }
 
 model JobDetails{
-  id          Int         @id   @default(autoincrement())
-  company     String     
-  ctc         Int
-  adminId     Int
-  adminUser   AdminUser   @relation(fields:[adminId], references: [id])
+  id            Int         @id   @default(autoincrement())
+  company       String   
+  jobTitle      String   @default("Not specified")
+  eligibility   String   @default("Unknown")
+  location      String   @default("TBD")
+  package       String   @default("0 LPA")
+  round1        String   @default("Not available")
+  round2        String   @default("Not available")
+  round3        String   @default("Not available")
+  adminId       Int
+  adminUser     AdminUser   @relation(fields:[adminId], references: [id])
 }
