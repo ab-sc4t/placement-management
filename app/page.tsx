@@ -4,11 +4,15 @@ import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Line from "@/components/Line";
 import { TopRightArrow } from "@/icons/TopRightArrow";
+import { authOptions } from "@/lib/auth"
+import { getServerSession } from "next-auth"
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions)
+  console.log(session);
   return (
     <div className="h-screen">
-      <Header/>
+      <Header session={session} />
       <div className="bg-[url('/HomePage.png')] bg-cover h-screen">
         <div className="w-full h-screen bg-gradient-to-r from-black to-transparent via-black/30">
           <div className="text-white flex-col-reverse justify-end pl-32">
@@ -30,7 +34,7 @@ export default function Home() {
               </div>
               <div className="ml-4">
                 <CircularButton
-                  href="/signin"
+                  href={session ? "/jobdetails" : "/signin"}
                   logo={<TopRightArrow size="42" />}
                 />
               </div>
@@ -81,7 +85,7 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <Footer/>
+      <Footer />
     </div>
   );
 }
