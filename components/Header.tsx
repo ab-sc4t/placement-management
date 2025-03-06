@@ -1,6 +1,7 @@
 import { TopRightArrow } from "@/icons/TopRightArrow";
 import Button from "./Button";
 import LogoutButton from "./LogoutButton";
+import Link from "next/link";
 
 interface HeaderProps {
     session: any; // session can be passed here
@@ -11,7 +12,7 @@ export default function Header({ session }: HeaderProps) {
         <div>
             <div className="flex justify-between items-center p-4">
                 <div className="pl-16 text-3xl">
-                    Placement Pro
+                    <Link href="/">Placement Pro</Link>
                 </div>
                 <div className="flex gap-4 pr-16">
                     {session?.user ? (
