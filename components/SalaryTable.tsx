@@ -22,6 +22,9 @@ interface SalaryTableProps {
 }
 
 export default function SalaryTable({ salaryData }: SalaryTableProps) {
+
+    //handleAddToCalendar
+
     return (
         <div className="mt-8 overflow-x-auto">
             <div className="inline-block min-w-full align-middle">
