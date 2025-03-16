@@ -20,7 +20,7 @@ async function getSalaryData() {
 export default async function SalariesPage() {
     const salaryData = await getSalaryData()
     const session = await getServerSession(authOptions)
-    console.log(session);
+    console.log("Session Details: " , session);
     return (
         <div className="min-h-screen bg-gray-100">
             <Header session={session}/>

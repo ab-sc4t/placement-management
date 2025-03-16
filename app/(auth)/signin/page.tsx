@@ -2,6 +2,7 @@
 "use client"
 import { signIn } from "next-auth/react";
 import { useRouter } from 'next/navigation';
+import { FcGoogle } from "react-icons/fc";
 
 export default function Signin() {
     const router = useRouter();
@@ -65,7 +66,13 @@ export default function Signin() {
                     className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded"
                     style={{ display: 'none' }}
                 ></div>
-
+                <button
+                    onClick={() => signIn("google")}
+                    className="flex items-center justify-center gap-2 w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm bg-white hover:bg-gray-100 transition-all"
+                >
+                    <FcGoogle className="text-xl" />
+                    <span className="text-gray-700 font-medium">Sign in with Google</span>
+                </button>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">
