@@ -1,6 +1,7 @@
 import { AddButtonLogo } from "@/icons/AddButtonLogo";
 import AddButton from "./AddButton";
 import Button from "./Button";
+import AddToCalendar from "./AddToCalendar";
 
 interface Data {
     adminId: number;
@@ -58,6 +59,7 @@ export default function SalaryTable({ salaryData }: SalaryTableProps) {
                                     <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.package}</td>
                                     <td className="px-6 py-4 text-sm text-gray-500 min-w-[120px]">
                                         <Button text="Add" href="/addButton" endingLogo={<AddButtonLogo/>}/>
+                                        <AddToCalendar job={item}/>
                                     </td>
                                 </tr>
                             ))}
