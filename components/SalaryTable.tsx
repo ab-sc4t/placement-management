@@ -58,7 +58,7 @@ export default function SalaryTable({ salaryData }: SalaryTableProps) {
                                     <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.eligibility}</td>
                                     <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.package}</td>
                                     <td className="px-6 py-4 text-sm text-gray-500 min-w-[120px]">
-                                        <Button text="Add" href="/addButton" endingLogo={<AddButtonLogo/>}/>
+                                        {/* <Button text="Add" href="/addButton" endingLogo={<AddButtonLogo/>}/> */}
                                         <AddToCalendar job={item}/>
                                     </td>
                                 </tr>

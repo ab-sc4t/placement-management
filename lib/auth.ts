@@ -6,6 +6,7 @@ import GoogleProvider from "next-auth/providers/google";
 // console.log("Prisma Client Instance:", db); 
 
 export const authOptions: NextAuthOptions = {
+    
     // adapter: PrismaAdapter(db),
     providers: [
         GoogleProvider({
@@ -13,7 +14,7 @@ export const authOptions: NextAuthOptions = {
             clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
             authorization: {
                 params: {
-                    scope: "openid profile email https://www.googleapis.com/auth/calendar.readonly", // Google Calendar access
+                    scope: "openid profile email https://www.googleapis.com/auth/calendar.events", // Google Calendar access
                 },
             },
         }),

@@ -1,60 +1,70 @@
-"use client"
+"use client";
+import { getSession } from "next-auth/react";
 import { useState } from "react";
 
-interface Job{
-    index?: Number,
-    company?: string,
-    jobTitle?: string,
-    location?: string,
-    round1?: string,
-    round2?: string,
-    round3?: string,
-    eligibility?: string,
-    package?: string,
+interface Job {
+    index?: number;
+    company?: string;
+    jobTitle?: string;
+    location?: string;
+    round1?: string;
+    round2?: string;
+    round3?: string;
+    eligibility?: string;
+    package?: string;
 }
 
 export default function AddToCalendar({ job }: { job: Job }) {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
-    // console.log(job);
-    
-    const convertDateStringToISO = (dateString: string): string => {
+
+    const convertDateStringToISO = (dateString: string): string | null => {
+        if (!dateString || dateString === "Not available") return null;
         const [day, month, year] = dateString.split("/");
-        const fullYear = `20${year}`; 
-        
+        const fullYear = `20${year}`;
         const date = new Date(`${fullYear}-${month}-${day}T00:00:00Z`);
-        return date.toISOString(); 
+        return date.toISOString();
     };
-    
 
     const handleAddToCalendar = async () => {
         setLoading(true);
         setMessage("");
-        const round1= job.round1 != "Not available" ? convertDateStringToISO(job.round1) : null;
-        const round2= job.round2 != "Not available" ? convertDateStringToISO(job.round2) : null;
-        const round3= job.round3 != "Not available" ? convertDateStringToISO(job.round3) : null;
-        console.log(round1);
-        console.log(round2);
-        console.log(round3);
-        
-        
-        // const response = await fetch("/api/add-to-calendar", {
-        //     method: "POST",
-        //     headers: { "Content-Type": "application/json" },
-        //     body: JSON.stringify({
-        //         jobTitle: job.jobTitle,
-        //         round1,
-        //         round2,
-        //         round3
-        //     }),
-        // });
 
-        // const data = await response.json();
-        // if (response.ok) {
-        //     setMessage("Job rounds added to Google Calendar!");
-        // } else {
-        //     setMessage("Failed to add events. Try again.");
-        // }
+        const session = await getSession(); 
+        console.log("Access Session:", session);
+
+        if (!session || !session.user?.accessToken) {
+            setMessage("Unauthorized. Please sign in again.");
+            setLoading(false);
+            return;
+        }
+
+        const round1 = convertDateStringToISO(job.round1!);
+        const round2 = convertDateStringToISO(job.round2!);
+        const round3 = convertDateStringToISO(job.round3!);
+
+        console.log("Converted Dates:", { round1, round2, round3 });
+
+        const response = await fetch("/api/calendar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                company: job.company,
+                jobTitle: job.jobTitle,
+                round1,
+                round2,
+                round3,
+            }),
+        });
+
+        const data = await response.json();
+        console.log("API Response:", data);
+
+        if (response.ok) {
+            setMessage("Job rounds added to Google Calendar!");
+        } else {
+            setMessage("Failed to add events. Try again.");
+        }
         setLoading(false);
     };
 
