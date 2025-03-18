@@ -1,4 +1,5 @@
 "use client";
+import axios from "axios";
 import { getSession } from "next-auth/react";
 import { useState } from "react";
 
@@ -45,16 +46,14 @@ export default function AddToCalendar({ job }: { job: Job }) {
 
         console.log("Converted Dates:", { round1, round2, round3 });
 
-        const response = await fetch("/api/calendar", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                company: job.company,
-                jobTitle: job.jobTitle,
-                round1,
-                round2,
-                round3,
-            }),
+        const response = await axios.post("/api/calendar", {
+            company: job.company,
+            jobTitle: job.jobTitle,
+            round1,
+            round2,
+            round3,
+        }, {
+            headers: { "Content-Type": "application/json" }
         });
 
         const data = await response.json();
