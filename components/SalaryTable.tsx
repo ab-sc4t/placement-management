@@ -2,6 +2,7 @@ import { AddButtonLogo } from "@/icons/AddButtonLogo";
 import AddButton from "./AddButton";
 import Button from "./Button";
 import AddToCalendar from "./AddToCalendar";
+import DeleteJob from "./DeleteJob";
 
 interface Data {
     adminId: number;
@@ -20,12 +21,13 @@ type DataArray = Data[]
 
 interface SalaryTableProps {
     salaryData: DataArray,
-    isAdmin: Boolean
+    isAdmin: Boolean,
+    userId: Number
 }
 
-export default function SalaryTable({ salaryData, isAdmin }: SalaryTableProps) {
+export default function SalaryTable({ salaryData, isAdmin, userId }: SalaryTableProps) {
 
-    //handleAddToCalendar
+    const AddorDelete = isAdmin ? "Delete" : "Add";
 
     return (
         <div className="mt-8 overflow-x-auto">
@@ -36,7 +38,7 @@ export default function SalaryTable({ salaryData, isAdmin }: SalaryTableProps) {
                             <tr>
                                 {[
                                     "#", "Company Name", "Job Title", "Location", "Round 1 Date",
-                                    "Round 2 Date", "Round 3 Date", "Eligibility", "Package (in Lakhs)", "ADD"
+                                    "Round 2 Date", "Round 3 Date", "Eligibility", "Package (in Lakhs)", `${AddorDelete}`
                                 ].map((heading, index) => (
                                     <th key={index}
                                         className="px-6 py-3 text-left text-sm font-semibold text-gray-900 min-w-[180px]"
@@ -59,7 +61,7 @@ export default function SalaryTable({ salaryData, isAdmin }: SalaryTableProps) {
                                     <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.eligibility}</td>
                                     <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.package}</td>
                                     <td className="px-6 py-4 text-sm text-gray-500 min-w-[120px]">
-                                        {isAdmin ? null :  <AddToCalendar job={item}/>}
+                                        {isAdmin ? <DeleteJob userId = {userId}/> :  <AddToCalendar job={item} userId = {userId}/>}
                                     </td>
                                 </tr>
                             ))}
