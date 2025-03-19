@@ -62,7 +62,7 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async jwt({ token, account, user, profile }) {
             if (user) {
-                console.log(user.firstname);
+                // console.log(user.firstname);
                 token.id = user.id;
                 token.email = user.email;
                 token.isAdmin = account?.provider === "credentials"; 
@@ -71,9 +71,13 @@ export const authOptions: NextAuthOptions = {
             }
 
             if (account && profile) {
+                const dbUser = await db.user.findUnique({
+                    where: {email: profile.email},
+                });
                 token.accessToken = account.access_token;
                 token.refreshToken = account.refresh_token;
                 token.idToken = account.id_token;
+                token.id = dbUser?.id;
                 token.provider = account.provider;
                 token.firstname = profile.given_name;
                 token.lastname = profile.family_name;
@@ -95,21 +99,21 @@ export const authOptions: NextAuthOptions = {
             return session;
         },
 
-        async signIn({ user, account, profile }) {
+        async signIn({ user, account, profile, session }) {
             if (account?.provider === "google" && profile) {
-                // Check if user exists in the 'User' table
                 const existingUser = await db.user.findUnique({
                     where: { email: profile.email },
                 });
 
                 if (!existingUser) {
-                    // Create user if not found
+                    
                     await db.user.create({
                         data: {
                             firstname: profile.given_name,
                             lastname: profile.family_name,
                             email: profile.email,
                             image: profile.picture,
+                            accessToken: account.access_token 
                         },
                     });
                 }
