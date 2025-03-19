@@ -29,6 +29,7 @@ export default async function SalariesPage() {
     console.log("Session Details: " , session);
     const isAdmin = session?.user.isAdmin;
     const adminId = isAdmin ? session.user.id : undefined;
+    const id = Number(session?.user.id);
     console.log("checkpoint1");
     
     const salaryData = await getSalaryData(adminId);
@@ -46,7 +47,7 @@ export default async function SalariesPage() {
                             <Button text="My Job Board" href="/dashboard" endingLogo={<TopRightArrow size="24"/>}/>
                         </div>
                     </div>
-                    <SalaryTable salaryData={salaryData} isAdmin={isAdmin}/>
+                    <SalaryTable salaryData={salaryData} isAdmin={isAdmin} userId = {id}/>
                 </div>
             </div>
         </div>
