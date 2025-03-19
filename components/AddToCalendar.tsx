@@ -15,7 +15,12 @@ interface Job {
     package?: string;
 }
 
-export default function AddToCalendar({ job }: { job: Job }) {
+interface AddToCalendarProps {
+    job: Job;
+    userId: Number; 
+}
+
+export default function AddToCalendar({ job, userId }: AddToCalendarProps)  {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
@@ -43,10 +48,11 @@ export default function AddToCalendar({ job }: { job: Job }) {
         const round1 = convertDateStringToISO(job.round1!);
         const round2 = convertDateStringToISO(job.round2!);
         const round3 = convertDateStringToISO(job.round3!);
-
+        console.log("USER ID: ", userId);
         console.log("Converted Dates:", { round1, round2, round3 });
 
         const response = await axios.post("/api/calendar", {
+            userId: userId,
             company: job.company,
             jobTitle: job.jobTitle,
             round1,
@@ -56,10 +62,10 @@ export default function AddToCalendar({ job }: { job: Job }) {
             headers: { "Content-Type": "application/json" }
         });
 
-        const data = await response.json();
+        const data = await response.data;
         console.log("API Response:", data);
 
-        if (response.ok) {
+        if (response) {
             setMessage("Job rounds added to Google Calendar!");
         } else {
             setMessage("Failed to add events. Try again.");
