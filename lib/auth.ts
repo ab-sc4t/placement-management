@@ -117,10 +117,6 @@ export const authOptions: NextAuthOptions = {
 
             return true;
         },
-
-        // async redirect({ url, baseUrl }) {
-        //     return "/jobdetails";
-        // },
     },
 
     session: {
