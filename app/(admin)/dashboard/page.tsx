@@ -7,7 +7,7 @@ import axios from "axios";
 import { getServerSession } from "next-auth"
 import { getSession } from "next-auth/react";
 
-async function getSalaryData(adminId?: String) {
+async function getSalaryData(adminId?: Number) {
     try {
         console.log("Fetching salary data...");
         const url = adminId 
@@ -28,8 +28,7 @@ export default async function SalariesPage() {
     const session = await getServerSession(authOptions)
     console.log("Session Details: " , session);
     const isAdmin = session?.user.isAdmin;
-    const adminId = isAdmin ? session.user.id : undefined;
-    const id = Number(session?.user.id);
+    const adminId = isAdmin ? Number(session.user.id) : undefined;
     console.log("checkpoint1");
     
     const salaryData = await getSalaryData(adminId);
@@ -47,7 +46,7 @@ export default async function SalariesPage() {
                             <Button text="My Job Board" href="/dashboard" endingLogo={<TopRightArrow size="24"/>}/>
                         </div>
                     </div>
-                    <SalaryTable salaryData={salaryData} isAdmin={isAdmin} userId = {id}/>
+                    <SalaryTable salaryData={salaryData} isAdmin={isAdmin} userId = {adminId}/>
                 </div>
             </div>
         </div>

@@ -6,6 +6,7 @@ interface ButtonProps {
     href: string;
     startingLogo?: ReactElement;
     endingLogo?: ReactElement;
+    onClick?: ()=>void;
 }
 
 export default function Button(props: ButtonProps) : React.ReactNode{

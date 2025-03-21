@@ -67,7 +67,7 @@ export default async function Home() {
                   Designed to simplify your placement journey,
                   our portal helps you stay informed about the latest companies,
                   job opportunities, and key placement dates.
-                  Whether you're tracking interviews or exploring top employers,
+                  Whether you are tracking interviews or exploring top employers,
                   we make it easy to plan and prepare for your future.
                 </p>
               </div>

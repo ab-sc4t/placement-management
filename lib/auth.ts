@@ -1,76 +1,135 @@
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { NextAuthOptions } from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { db } from "./db";
-import { compare } from "bcrypt";
+import bcrypt from "bcrypt";
+import { db } from "./db"; // Prisma client instance
 
 export const authOptions: NextAuthOptions = {
-    adapter: PrismaAdapter(db),
-    secret: process.env.NEXTAUTH_SECRET,
-    session: {
-        strategy: 'jwt'
-    },
-    pages: {
-        signIn: "/signin",
-    },
     providers: [
+        // Google OAuth (Only for Users)
+        GoogleProvider({
+            clientId: process.env.GOOGLE_CLIENT_ID!,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+            authorization: {
+                params: {
+                    scope: "openid profile email https://www.googleapis.com/auth/calendar.events",
+                },
+            },
+        }),
+
+        // Credentials-based login (Only for Admins)
         CredentialsProvider({
-            name: "Credentials",
+            name: "Admin Credentials",
             credentials: {
-                email: { label: "Email", type: "email", placeholder: "ayush@gmail.com" },
-                password: { label: "Password", type: "password" }
+                email: { label: "Email", type: "email" },
+                password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
-                console.log("its coming here");
-
-                console.log("email: ", credentials?.email);
-                console.log("email: ", credentials?.password);
                 if (!credentials?.email || !credentials?.password) {
-                    return null;
+                    console.error("❌ Missing email or password");
+                    throw new Error("Missing email or password");
                 }
-                const existingUser = await db.user.findUnique({
-                    where: {
-                        email: credentials?.email
-                    }
-                })
-                console.log("jerfbherbfwhre: ", existingUser);
-                if (!existingUser) {
-                    return null;
+            
+                const admin = await db.adminUser.findUnique({
+                    where: { email: credentials.email },
+                });
+            
+                if (!admin) {
+                    console.error("❌ Admin not found:", credentials.email);
+                    throw new Error("Admin not found");
                 }
-                const passwordMatch = await compare(credentials.password, existingUser.password);
+            
+                if (!admin.password) {
+                    console.error("❌ Admin account is missing a password");
+                    throw new Error("Admin account is missing a password");
+                }
+                // const hashedPass = await bcrypt.hash(credentials.password, 10)
+                const passwordMatch = await bcrypt.compare(credentials.password, admin.password);
                 if (!passwordMatch) {
-                    return null;
+                    console.log("passwordMatch: ", passwordMatch);
+                    console.log("1: ", credentials.password);
+                    console.log("2: ", admin.password);
+                    console.error("❌ Invalid password for:", credentials.email);
+                    throw new Error("Invalid password");
                 }
-                return {
-                    id: `${existingUser.id}`, //it is in string format
-                    firstname: existingUser.firstname,
-                    lastname: existingUser.lastname,
-                    email: existingUser.email,
-                }
-            }
-        })
+            
+                console.log("✅ Admin login successful:", admin.email);
+                return { id: admin.id, email: admin.email, role: "admin", firstname: admin.firstname, lastname: admin.lastname };
+            }            
+        }),
     ],
+
     callbacks: {
-        async jwt({ token, user}) {
-            if(user){
-                return{
-                    ...token,
-                    firstname: user.firstname,
-                    lastname: user.lastname,
-                }
+        async jwt({ token, account, user, profile }) {
+            if (user) {
+                // console.log(user.firstname);
+                token.id = user.id;
+                token.email = user.email;
+                token.isAdmin = account?.provider === "credentials"; 
+                token.firstname = user.firstname;
+                token.lastname = user.lastname;
             }
-            return token
+
+            if (account && profile) {
+                const dbUser = await db.user.findUnique({
+                    where: {email: profile.email},
+                });
+                token.accessToken = account.access_token;
+                token.refreshToken = account.refresh_token;
+                token.idToken = account.id_token;
+                token.id = dbUser?.id;
+                token.provider = account.provider;
+                token.firstname = profile.given_name;
+                token.lastname = profile.family_name;
+                token.picture = profile.picture;
+            }
+
+            return token;
         },
+
         async session({ session, token }) {
-            return{
-                ...session,
-                user:{
-                    ...session.user,
-                    firstname: token.firstname,
-                    lastname: token.lastname
+            session.user.id = token.id;
+            session.user.email = token.email;
+            session.user.role = token.role;
+            session.user.firstname = token.firstname;
+            session.user.lastname = token.lastname;
+            session.user.image = token.picture;
+            session.user.accessToken = token.accessToken;
+            session.user.isAdmin = token.isAdmin;
+            return session;
+        },
+
+        async signIn({ user, account, profile, session }) {
+            if (account?.provider === "google" && profile) {
+                const existingUser = await db.user.findUnique({
+                    where: { email: profile.email },
+                });
+
+                if (!existingUser) {
+                    
+                    await db.user.create({
+                        data: {
+                            firstname: profile.given_name,
+                            lastname: profile.family_name,
+                            email: profile.email,
+                            image: profile.picture,
+                            accessToken: account.access_token 
+                        },
+                    });
                 }
             }
-            return session
-        }
-    }
-}
+
+            return true;
+        },
+    },
+
+    session: {
+        strategy: "jwt",
+    },
+
+    pages: {
+        signIn: "/auth/signin",
+        signOut: "/auth/signout",
+        error: "/auth/error",
+    },
+};
