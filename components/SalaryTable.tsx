@@ -49,22 +49,31 @@ export default function SalaryTable({ salaryData, isAdmin, userId }: SalaryTable
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200 bg-white">
-                            {salaryData.map((item, index) => (
-                                <tr key={index}>
-                                    <td className="px-6 py-4 text-sm font-medium text-gray-900 w-auto">{index + 1}</td>
-                                    <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.company}</td>
-                                    <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.jobTitle}</td>
-                                    <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.location}</td>
-                                    <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.round1}</td>
-                                    <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.round2}</td>
-                                    <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.round3}</td>
-                                    <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.eligibility}</td>
-                                    <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.package}</td>
-                                    <td className="px-6 py-4 text-sm text-gray-500 min-w-[120px]">
-                                        {isAdmin ? <DeleteJob userId = {userId}/> :  <AddToCalendar job={item} userId = {userId}/>}
+                            {salaryData.length > 0 ? (
+                                salaryData.map((item, index) => (
+                                    <tr key={index}>
+                                        <td className="px-6 py-4 text-sm font-medium text-gray-900 w-auto">{index + 1}</td>
+                                        <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.company}</td>
+                                        <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.jobTitle}</td>
+                                        <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.location}</td>
+                                        <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.round1}</td>
+                                        <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.round2}</td>
+                                        <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.round3}</td>
+                                        <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.eligibility}</td>
+                                        <td className="px-6 py-4 text-sm font-medium text-gray-900 min-w-[200px]">{item.package}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-500 min-w-[120px]">
+                                            {isAdmin ? <DeleteJob userId={userId} jobId={item.id} />
+                                                : <AddToCalendar job={item} userId={userId} />}
+                                        </td>
+                                    </tr>
+                                ))
+                            ) :
+                                <tr>
+                                    <td className="px-6 py-4 text-center text-sm text-gray-500">
+                                        No Jobs to display
                                     </td>
                                 </tr>
-                            ))}
+                            }
                         </tbody>
                     </table>
                 </div>
