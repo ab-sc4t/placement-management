@@ -7,7 +7,7 @@ import axios from "axios";
 import { getServerSession } from "next-auth"
 import { getSession } from "next-auth/react";
 
-async function getSalaryData(adminId?: String) {
+async function getSalaryData(adminId?: String,) {
     try {
         console.log("Fetching salary data...");
         const url = adminId 

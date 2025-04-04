@@ -1,6 +1,7 @@
 import Button from "@/components/Button";
 import Header from "@/components/Header"
 import SalaryTable from "@/components/SalaryTable"
+import { AddButtonLogo } from "@/icons/AddButtonLogo";
 import { TopRightArrow } from "@/icons/TopRightArrow";
 import { authOptions } from "@/lib/auth"
 import axios from "axios";
@@ -25,14 +26,17 @@ async function getSalaryData(adminId?: Number) {
 }
 
 export default async function SalariesPage() {
-    const session = await getServerSession(authOptions)
-    console.log("Session Details: " , session);
-    const isAdmin = session?.user.isAdmin;
-    const adminId = isAdmin ? Number(session.user.id) : undefined;
-    console.log("checkpoint1");
-    
+    const session = await getServerSession(authOptions);
+    console.log("Session Details:", session);
+
+    const isAdmin = session?.user?.isAdmin || false; // Ensure a default value
+    console.log("isAdmin:", isAdmin);
+
+    const adminId = isAdmin ? Number(session?.user?.id) : undefined;
+    console.log("checkpoint1: ", adminId);
+
     const salaryData = await getSalaryData(adminId);
-    console.log("checkpoint2");
+    console.log("checkpoint2", salaryData);
     return (
         <div className="min-h-screen bg-gray-100">
             <Header session={session}/>
@@ -40,10 +44,11 @@ export default async function SalariesPage() {
                 <div className="px-16 sm:px-6 lg:px-16">
                     <div className="sm:flex sm:items-center">
                         <div className="sm:flex-auto">
-                            <h1 className="text-2xl font-semibold leading-6 text-gray-900">Company Listing</h1>
+                            <h1 className="text-2xl font-semibold leading-6 text-gray-900">COMPANY LISTING</h1>
                         </div>
                         <div>
-                            <Button text="My Job Board" href="/dashboard" endingLogo={<TopRightArrow size="24"/>}/>
+                            {isAdmin ? <Button text="Add" href="/addJob" endingLogo={<AddButtonLogo/>}/> : 
+                            <Button text="My Job Board" href="/dashboard" endingLogo={<TopRightArrow size="24"/>}/>}
                         </div>
                     </div>
                     <SalaryTable salaryData={salaryData} isAdmin={isAdmin} userId = {adminId}/>

@@ -24,7 +24,7 @@ export default function SignIn() {
             if (response?.error) {
                 setError("Invalid admin credentials.");
             } else if (response?.ok) {
-                router.push("/jobdetails"); // Redirect admins to the admin panel
+                router.push("/dashboard"); // Redirect admins to the admin panel
                 router.refresh();
             }
         } catch (error) {
