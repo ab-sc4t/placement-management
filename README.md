@@ -46,6 +46,8 @@ DATABASE_URL=your_postgresql_database_url
 NEXTAUTH_SECRET=your_nextauth_secret
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
+NEXT_PUBLIC_ADMIN_SECRET
+
 ```
 
 ### 4. Run the development server
