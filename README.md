@@ -17,14 +17,12 @@ PlacementPro is a Next.js & TypeScript-based Placement Management System designe
 ### Security & Performance
 - NextAuth for session management.
 - PostgreSQL database hosted on Neon.tech.
-- Deployed using Docker for scalability.
 
 ## Tech Stack
 - Frontend: Next.js, TypeScript, Tailwind CSS
 - Backend: Next.js API routes, Prisma ORM
 - Database: PostgreSQL (Neon.tech)
 - Authentication: NextAuth.js
-- Deployment: Docker, Vercel
 
 ## Installation & Setup
 
