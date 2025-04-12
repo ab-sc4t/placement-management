@@ -46,7 +46,7 @@ DATABASE_URL=your_postgresql_database_url
 NEXTAUTH_SECRET=your_nextauth_secret
 GOOGLE_CLIENT_ID=your_google_client_id
 GOOGLE_CLIENT_SECRET=your_google_client_secret
-NEXT_PUBLIC_ADMIN_SECRET
+NEXT_PUBLIC_ADMIN_SECRET: it is the secret one needs to access the admin registration as /signup?secret=NEXT_PUBLIC_ADMIN_SECRET
 
 ```
 
