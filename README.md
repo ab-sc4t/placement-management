@@ -56,6 +56,6 @@ Your app will be running at `http://localhost:3000`
 
 ---
 
-PlacementPro – Simplifying the placement process for students and administrators!__
+PlacementPro – Simplifying the placement process for students and administrators! <br />
 Connect on LinkedIn if you wish to aollaborate or have any ideas (For LinkedIn account check my github profile)
 
